@@ -1,0 +1,65 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<dom-module id="chat">
+  <template>
+    <style>
+      :host {
+        display: block;
+		padding-top: 64px;
+      }
+	  	  
+	  #head {
+		display: block;
+        background-color: rgba(250, 112, 62, 1);
+		height:80px;
+		weight: 100px;
+		text-align:center;
+		line-height: 80px;
+		color:white;
+		
+      }
+	  
+	  #inp{
+		display: block;
+        <!--background-color: rgba(205, 255, 173, 1);-->
+		background-color:white;
+		height:200px;
+		width: 200px;
+		text-align:center;
+		color:black;
+		padding:10px;
+		margin: 0 auto;
+	  }
+	  
+    </style>
+    
+	<div id="head">
+		<h2>Welcome to Yo chat!</h2>
+	</div>
+	
+	
+	
+	<div padding-top="20px">
+		value prop1 = [[prop1]]
+	</div>
+	
+	
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'chat',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'show-app',
+        },
+      },
+
+    });
+  </script>
+</dom-module>
