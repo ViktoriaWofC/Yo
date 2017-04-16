@@ -1,0 +1,7 @@
+{
+  "name": "Yo",
+  "short_name": "Yo",
+  "description": "Yo chat",
+  "start_url": "/",
+  "display": "standalone"
+}
