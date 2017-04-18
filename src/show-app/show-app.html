@@ -6,7 +6,8 @@
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 
-<link rel="import" href="launch.html">
+<link rel="import" href="launch-screen.html">
+<link rel="import" href="chat-screen.html">
 
 <dom-module id="show-app">
   <template>
@@ -38,6 +39,17 @@
 		padding:10px;
 		margin: 0 auto;
 	  }
+	  
+	  .block1 { 
+		width: 800px; 
+		height: 800px;
+		background: #ccc;
+		padding: 5px;
+		padding-right: 20px; 
+		padding-bottom: 30px;
+		border: solid 1px black; 
+		float: left;
+	   }
 	    
 	  
     </style>
@@ -54,36 +66,19 @@
         selected="[[routeData.page]]"
         selected-attribute="active"
         attr-for-selected="name"
-        fallback-selection="lau">
-      <launch name="lau"
-          subroute="[[subroute]]">,.l</show-list-page>
-      <!--show-video-page name="video"
-          subroute="[[subroute]]"></show-video-page-->
+        fallback-selection="launch">
+      <launch-screen id="ls" name="launch"
+          subroute="[[subroute]]"></launch-screen>
+      <chat-screen name="chat"
+          subroute="[[subroute]]"></chat-screen>
     </iron-pages>
+	   
+  <div id="inp">
+	<paper-button id="pb" toggles raised class="green" on-tap="startChat">Start chat</paper-button>
+	</div>
 	
-	<launch>sdfsf</launch>
-	
-
-	
-	<!--
-	kjmkl
-	<br>
-	---------------------------------------------------------------------------------
-	<br>
-	
-
-	jkhkjh
-	<br>
-	<iron-pages id="mypages" selected="0">
-      <div>Page 1</div>
-      <div>Page 2</div>
-      <div>Page 3</div>
-	  <div><launch></launch></div>
-    </iron-pages>
-	
-	<paper-button raised on-tap="gotoPrevious">Previous</paper-button>
-    <paper-button raised on-tap="gotoNext">Next</paper-button>
-    -->
+	<br><br><br>
+  ddfg = [[nickname]]
 	
   </template>
 
@@ -97,13 +92,14 @@
       properties: {
 		nickname: {
           type: String,
-          value: '',
+          value: function() {
+            return this.$.ls.$.NickName.value;
+          },
+		  
         },
 
       },
 	  
-	  
-		 
 	  
 	  goLink: function(e) {
         //alert("21354");
@@ -111,22 +107,21 @@
       },
 	  
 	  startChat: function(e) {
-		//this.nickname = this.$.NickName.value;
-		var pages = document.querySelector('iron-pages');
+		var pages = document.querySelector('iron-pages');		
 		pages.selectNext();
+		this.$.pb.style.display = 'none';
+		
+		var nick = this.$.ls.$.NickName.value;//this.$.ls.nickname;
+		if(nick.localeCompare("")==0){
+			this.nickname = "Anonimus";
+		}
+		else {
+			this.nickname = nick;
+		}
       },
 	  
 	  
-	  	  
-		  gotoNext :function (event) {
-        var pages = document.getElementById('mypages');
-        pages.selectNext();
-      },
-      
-      gotoPrevious : function (event) {
-        var pages = document.getElementById('mypages');
-        pages.selectPrevious();
-      }
+
 
     });
 	

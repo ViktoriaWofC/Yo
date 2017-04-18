@@ -4,7 +4,7 @@
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 
-<dom-module id="launch">
+<dom-module id="launch-screen">
   <template>
     <style>
       :host {
@@ -35,7 +35,20 @@
 		margin: 0 auto;
 	  }
 	  
+	  .block1 { 
+		width: 800px; 
+		height: 800px;
+		background: #ccc;
+		padding: 5px;
+		padding-right: 20px; 
+		padding-bottom: 30px;
+		border: solid 1px black; 
+		float: left;
+	   }
+	  
     </style>
+	
+
 	
 	<app-location route="{{route}}"></app-location>
     <app-route
@@ -55,25 +68,20 @@
 		<paper-input id="NickName" label="NickName"></paper-input>
 		<br>
 
-		<paper-button toggles raised class="green" on-tap="startChat">Start chat</paper-button>
+		<!--paper-button toggles raised class="green" on-tap="startChat">
+		Start chat
+		</paper-button-->
 
 
 	</div>
 	
-	<div padding-top="20px">
+	<!--div padding-top="20px">
 		<br> nickname = [[nickname]]
 		
 		
-	</div>
+	</div-->
 	
-	<div >
-	<br>ghjkl
-	 <paper-button raisedButton id="test" link="http://twitter.com" on-tap="goLink">Click</paper-button>
- 
-	<br><br>
-	<a name="view3" href="/src/show-app/chat.html">View Three</a>
-   
-	</div>
+
 	
 	
   </template>
@@ -81,23 +89,19 @@
   <script>
     Polymer({
 
-      is: 'launch',
+      is: 'launch-screen',
 
       properties: {
 		nickname: {
           type: String,
           value: '',
         },
-      },
-	  
-	  goLink: function(e) {
-        //alert("21354");
-		this.route = 'chat';
-      },
-	  
+      },  
+	 
 	  startChat: function(e) {
 		this.nickname = this.$.NickName.value;
-      }
+	  }	 
+	  
 	  	  
 
     });
