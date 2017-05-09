@@ -5,9 +5,13 @@
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html"/>
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html"/>
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html"/>
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html"/>
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html"/>
+<link rel="import" href="../../bower_components/paper-item/paper-item.html"/>
 
-<link rel="import" href="launch-screen.html">
-<link rel="import" href="chat-screen.html">
 
 <dom-module id="show-app">
   <template>
@@ -55,7 +59,32 @@
 		background: rgba(205, 255, 173, 1);
 		border: solid 1px black; 
 	   }
+	   
+	   #launch {
+		  position: fixed;
+		  top: 0;
+		  left: 0;
+		  width: 100%;
+		  height: 100%;
+		  background: white;
+		  line-height: 100px;
+		}
 	    
+		paper-fab.red {
+			--paper-fab-background: rgba(230, 0, 38, 1);
+			--paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
+		  }
+		  
+		  #body{
+			display:none;
+		}
+		
+		paper-toolbar.red {
+		--paper-toolbar-background: rgba(250, 112, 62, 1);
+		--paper-toolbar-title: {
+		  font-weight: bold;
+		};
+		}
 	  
     </style>
 	
@@ -65,28 +94,70 @@
         pattern="/:page"
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
-	
-	<iron-pages id="pages" class="blockHelp"
-        role="main"
-        selected="[[routeData.page]]"
-        selected-attribute="active"
-        attr-for-selected="name"
-        fallback-selection="launch">
-      <launch-screen id="ls" name="launch"
-          subroute="[[subroute]]"></launch-screen>
-      <chat-screen name="chat"
-          subroute="[[subroute]]"></chat-screen>
-    </iron-pages>
-	   
-  <div id="inp">
-	<paper-button id="pb" toggles raised class="green" on-tap="startChat">Start chat</paper-button>
+		
+	<div align="center"   id = "launch">
+		<!--img src="icon150.png"  alt="изображение" style='vertical-align: middle;'/-->
+		<div>
+		<H4>Please, input your nickname:</H4>
+                <paper-input value='{{ nickname }}'>
+                </paper-input>
+                <div class='buttons'>
+                    <paper-button on-click='startChat'>Start chat</paper-button>
+                </div>
+				</div>
 	</div>
 	
-	<br><br><br>
+	
+	
+	<div id="body">
+	
+	<paper-toolbar class="red" style='position:fixed; top:0px; left:0px; width:100%'>
+            <div class="title"> Yo chat </div>
+    </paper-toolbar>
+	
+	<paper-dialog id='errServer' modal>
+				<H4>Error connection to server!</H4>				
+                <div class='buttons'>
+                    <!paper-button dialog-dismiss>Ok</paper-button-->
+                </div>
+    </paper-dialog>
+		
+
+	<br>	<br><br>	
+	<div align="center">		
+	<paper-button raised on-click="showMore">Show more</paper-button>
+	</div>
+	
+	<!--paper-button raised on-click="printDB">print DB</paper-button-->
+	
+	
+	<paper-listbox id="listbox">
+                <template is='dom-repeat' items='{{ helps }}'>
+                    <!-- Create an individual task -->
+                    <paper-item>
+						<!--iron-icon icon="star"></iron-icon-->
+                               
+                    </paper-item>
+                </template>
+            </paper-listbox>
+			
+		<div id="listbox">
+</div>		
+	   
+	<div id="fab">
+            <paper-fab  icon='add' class="red"
+                       style='position:fixed; bottom: 30px; right:24px'
+                       on-click='sendYo'>
+			</paper-fab>
+	</div>
+	<br><br><br><br>
+	<!--br>
 	<div class="block1">
 	Переменные:
 	<br><br>	
 	nickname = "[[nickname]]"
+	</div-->
+	
 	</div>
   
 	
@@ -102,39 +173,306 @@
       properties: {
 		nickname: {
           type: String,
-          value: function() {
-            return this.$.ls.$.NickName.value;
-          },
+          value: "",
 		  
+        },
+		
+		k: {
+          type: Number,
+          value: -1,
+        },
+		
+		listYos: {
+          type: Array,
+          value: [],
         },
 
       },
 	  
+	  resdy: function(){
+		this.$.addNickname.open();
+	  },
 	  
 	  goLink: function(e) {
         //alert("21354");
 		this.route = 'chat';
       },
 	  
-	  startChat: function(e) {
-		var pages = document.querySelector('iron-pages');		
-		pages.selectNext();
-		this.$.pb.style.display = 'none';
+	  sendYo: function() {
+			console.log("send Yo");
+			 
+			
+			var date = getFormattedDate(new Date());			
+				
+			console.log("data: "+ date);
+			console.log("nickname: "+this.nickname);
+			
+			var sendMes = {};
+			sendMes.text = "Yo!";
+			sendMes.date= date;
+			sendMes.nickname = this.nickname;
+			
+			//WebSocket.OPEN
+			/*if(typeof socet==='undefined'){
+				console.log("undefined");
+				socet= new WebSocket(adr);
+				setTimeout(function(){socket.send(JSON.stringify(sendMes))}, 10000);
+			}else if(socet.readyState===WebSocket.CLOSED){
+				console.log("CLOSED");
+				socet= new WebSocket(adr);
+				setTimeout(function(){socket.send(JSON.stringify(sendMes))}, 10000);
+			}else if(socet.readyState===WebSocket.CLOSING){
+				console.log("CLOSING");
+				socet= new WebSocket(adr);
+				setTimeout(function(){socket.send(JSON.stringify(sendMes))}, 3000);
+			}else socket.send(JSON.stringify(sendMes));*/
+			
+			socket.send(JSON.stringify(sendMes));
+			
+			window.scrollTo(0,document.body.scrollHeight);
+			
+		},
 		
-		var nick = this.$.ls.$.NickName.value;//this.$.ls.nickname;
-		if(nick.localeCompare("")==0){
+		showMore: function() {
+		var elem = document.getElementById( 'listbox' );
+        //elem.innerHTML ='';
+			console.log("-----------------------------------");
+			var s = k+"";//this.k+"";
+			socket.send(s);	
+			//k = k+10;
+		},
+	  
+	  startChat: function(e) {
+	  
+		//e.style.display = 'none';
+			//socet.send("start");
+		document.getElementById("launch").style.display = 'none';
+		document.getElementById("body").style.display = 'block';
+		//this.$.addNickname.close();
+				
+		if(this.nickname.localeCompare("")==0){
 			this.nickname = "Anonimus";
 		}
-		else {
+		
+		updateViewList();
+		
+		window.scrollTo(0,document.body.scrollHeight);
+		
+		//socet.send("start");
+		/*else {
 			this.nickname = nick;
-		}
+			this.$.chat.nick(this.nickname);
+		}*/
       },
 	  
+	  updateList: function(message) {
 	  
-
+		this.listYos.push(message);
+      },
+	  
+	  printDB: function (){
+		var db = open.result;
+		var tx = db.transaction("MyObjectStore", "readwrite");
+		var store = tx.objectStore("MyObjectStore");
+		var index = store.index("key");
+		console.log("---DB---");
+			
+		index.openCursor().onsuccess = function(event) {			
+			cursor = event.target.result;
+			if(cursor) {
+			  var mess = {
+				key: cursor.value.key,
+				text: cursor.value.text,
+				date: cursor.value.date,
+				nickname: cursor.value.nickname
+			};
+			
+			console.log("cursor: "+mess.key+" "+mess.date+" "+mess.nickname);
+			  cursor.continue();
+			} else {
+			  //console.log("ind: "+ind);
+			}
+		}
+		
+	},
 
     });
 	
+	function hide(el) {
+			el.style.display = 'none';
+			
+					
+			//socet.send("start");
+
+			document.getElementById("body").style.display = 'block';
+			this.startChat();
+			
+			//document.getElementById("show-app").addNickname.open();	
+
+			//document.getElementById("category").updateRecords();
+			//console.log("listItems length: "+document.getElementById("category").listItems.length);
+			//document.getElementById("shopping").updateAfterClick(document.getElementById("category").listItems);
+			//document.getElementById("shopping").updateRecords();
+		};
+		
+	function getFormattedDate(date) {
+	  var year = date.getFullYear();
+	  var month = (1 + date.getMonth()).toString();
+	  month = month.length > 1 ? month : '0' + month;
+	  var day = date.getDate().toString();
+	  day = day.length > 1 ? day : '0' + day;
+	  
+	  var hour = date.getHours();
+	  //hour = hour.length > 1 ? hour : '0' + hour;
+	  var minute = date.getMinutes();
+	  //minute = minute.length > 1 ? minute : '0' + minute;
+	  var sec = date.getSeconds();
+	  //sec = sec.length > 1 ? sec : '0' + sec;
+	  
+	  return day + '.' + month + '.' + year+ ' /  ' + hour+ ':' + minute+ ':' + sec;
+	}
+
+	function updateList(message) {
+	
+		var db = open.result;
+		var tx = db.transaction("MyObjectStore", "readwrite");
+		var store = tx.objectStore("MyObjectStore");
+		console.log("message.key: "+message.key);
+		store.put({key:message.key, text: message.text, nickname: message.nickname, date: message.date});
+	
+		//document.getElementById("show-app").updateList(message);
+		helps.push(message);
+		helps.sort(function(a, b) {
+				return a.key - b.key;
+		});
+		k = helps[0].key;
+		console.log("key: "+k);
+		
+		var mes = helps[helps.length-1];
+		var elem = document.getElementById( 'listbox' );
+		elem.innerHTML = "";
+		
+		for(var i = 0; i< helps.length;i++){
+			elem.innerHTML = elem.innerHTML
+				+'<br>'
+				+"<div style='padding:10px;border:solid 1px black;'>"
+				+helps[i].text
+				+"<br><div style='font-sizesize:2; color:gray;'>"+helps[i].nickname+' : '+helps[i].date+'</div>'
+				+'</div>';
+		}
+		
+	};
+	
+	function updateViewList() {
+			
+		helps.sort(function(a, b) {
+				return a.key - b.key;
+		});
+		k = helps[0].key;
+		console.log("key: "+k);
+
+		var elem = document.getElementById( 'listbox' );
+		elem.innerHTML = "";
+		
+		for(var i = 0; i< helps.length;i++){
+			elem.innerHTML = elem.innerHTML
+				+'<br>'
+				+"<div style='padding:10px;border:solid 1px black;'>"
+				+helps[i].text
+				+"<br><div style='font-sizesize:2; color:gray;'>"+helps[i].nickname+' : '+helps[i].date+'</div>'
+				+'</div>';
+		}
+		
+	};
+	
+	//<div style='font-sizesize:2; color:gray;'>
+	//				 
+	//</div>
+	
+	var k = -1;
+	
+	var helps=[];
+	
+	var adr = "ws://92a9e92f.ngrok.io:80"
+	
+	var socket = new WebSocket(adr);
+  
+	  socket.onopen = function() {
+		//alert("Соединение установлено.");
+		console.log("---open connect---");
+	  };
+
+	  socket.onclose = function(event) {
+		if (event.wasClean) {
+		  //alert('Соединение закрыто чисто');
+		} else {
+		  //alert('Обрыв соединения'); // например, "убит" процесс сервера
+		  console.log("---close connect---");
+		  socket = new WebSocket(adr);
+		}
+		//alert('Код: ' + event.code + ' причина: ' + event.reason);
+	  };
+
+	  socket.onmessage = function(event) {
+		var message = JSON.parse(event.data);
+		
+		console.log("mess: "+ message.date+ " "+ message.nickname+ " "+ message.key);
+		//helps.push(message);
+		updateList(message);
+	  };
+
+	  socket.onerror = function(error) {
+		//document.getElementById("errServer").open();
+	   //alert("Ошибка " + error.message);
+	  };
+	  
+	////////////////////////////////////////////////////////////
+
+	var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+
+	// Open (or create) the database
+	var open = indexedDB.open("Data6yp", 1);
+
+	// Create the schema
+	open.onupgradeneeded = function() {
+		var db = open.result;
+		var store = db.createObjectStore("MyObjectStore", {keyPath: "key"});
+		var index = store.createIndex("key", "key");
+	};
+	
+	
+	open.onsuccess = function() {
+		// Start a new transaction
+		var db = open.result;
+		var tx = db.transaction("MyObjectStore", "readwrite");
+
+		var store = tx.objectStore("MyObjectStore");
+		var index = store.index("key");
+		
+		var  date = getFormattedDate(new Date);
+		//store.put({key:0, text: "Yo", nickname: "zaiac", date: date});
+			
+		index.openCursor().onsuccess = function(event) {			
+			cursor = event.target.result;
+			if(cursor) {
+			  var mess = {
+				key: cursor.value.key,
+				text: cursor.value.text,
+				date: cursor.value.date,
+				nickname: cursor.value.nickname
+			};
+			
+			helps.push(mess);
+			console.log("cursor: "+cursor.value.key+" "+cursor.value.date+" "+cursor.value.nickname);
+			  cursor.continue();
+			} else {
+			  console.log("-");
+			}
+		};
+			
+	};
+	  
+	  
 	
   </script>
 </dom-module>
