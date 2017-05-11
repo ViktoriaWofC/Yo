@@ -1,0 +1,109 @@
+<html><head><link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+
+</head><body><dom-module id="launch-screen">
+  <template>
+    <style>
+      :host {
+        display: block;
+		padding-top: 64px;
+      }
+	  	  
+	  #head {
+		display: block;
+        background-color: rgba(250, 112, 62, 1);
+		height:80px;
+		weight: 100px;
+		text-align:center;
+		line-height: 80px;
+		color:white;
+		
+      }
+	  
+	  #inp{
+		display: block;
+        <!--background-color: rgba(205, 255, 173, 1);-->
+		background-color:white;
+		height:200px;
+		width: 200px;
+		text-align:center;
+		color:black;
+		padding:10px;
+		margin: 0 auto;
+	  }
+	  
+	  .block1 { 
+		width: 800px; 
+		height: 800px;
+		background: #ccc;
+		padding: 5px;
+		padding-right: 20px; 
+		padding-bottom: 30px;
+		border: solid 1px black; 
+		float: left;
+	   }
+	  
+    </style>
+	
+
+	
+	<app-location route="{{route}}"></app-location>
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
+    
+	<div id="head">
+		<h2>Welcome to Yo chat!</h2>
+	</div>
+	
+	<div id="inp">
+		<b>
+		Please, input your nickname:
+		</b>
+		<paper-input id="NickName" label="NickName"></paper-input>
+		<br>
+
+		<!--paper-button toggles raised class="green" on-tap="startChat">
+		Start chat
+		</paper-button-->
+
+
+	</div>
+	
+	<!--div padding-top="20px">
+		<br> nickname = [[nickname]]
+		
+		
+	</div-->
+	
+
+	
+	
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'launch-screen',
+
+      properties: {
+		nickname: {
+          type: String,
+          value: '',
+        },
+      },  
+	 
+	  startChat: function(e) {
+		this.nickname = this.$.NickName.value;
+	  }	 
+	  
+	  	  
+
+    });
+	
+	
+	
+  </script>
+</dom-module>
+</body></html>
